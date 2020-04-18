@@ -47,7 +47,7 @@ from qgis._gui import *
 import processing
 
 from hrudelin.pluginUtils import layerstools
-from hrudelin.pluginUtils.tools import isWindows, isMac, which
+from hrudelin.pluginUtils.tools import isWindows, isMac, which, prepareGrassEnv
 
 # this exception is used by the QgisTasks
 class CancelException(Exception):
@@ -64,6 +64,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def __init__(self, parent, iface):
         """Constructor."""
         super(HruDelinDockWidget, self).__init__(parent)
+        prepareGrassEnv()
         # Qgis interface, used to get main window, manipulate messageBar etc...
         self.iface = iface
         # can be set within the interface
@@ -876,8 +877,29 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def processStep1(self, task):
         task.setProgress(0)
 
+        # TODO move environment building from bash to hrudelin core
+        # TODO adapt hrudelin core to be executed AND to be imported as a module
         #HruDelinCore.step1(self.configFilePath)
         print('inside STEP 1 task')
+
+        #os.environ['GISRC'] = '/home/julien/data/j2k_test/grass_db/grassdata/hru-delin/.grassrc'
+        #import grass.script as grass
+        #print('--- GISBASE')
+        #print(os.environ['GISBASE'])
+        #print('--- PATH')
+        #print(os.environ['PATH'])
+        #print('--- LD_LIB')
+        #print(os.environ['LD_LIBRARY_PATH'])
+
+        #grass.run_command('r.mapcalc', expression='toto=22', overwrite=True)
+        ##import subprocess
+        ##subp = subprocess.check_output(['r.info', 'map=toto'])
+        ##print('SUBP %s' % subp)
+        #res = grass.read_command('r.info',
+        #    #quiet=True, flags='nNc',
+        #    map='toto')
+        ##.decode('utf-8')
+        #print('RESSS %s' % res)
 
         return True
 
