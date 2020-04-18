@@ -283,6 +283,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         layerPath = params['path']
         layerName = params['name']
         expanded = params['expanded'] if 'expanded' in params else False
+        zoom = params['zoom'] if 'zoom' in params else False
         # default tag is 'various'
         tag = params['tag'] if 'tag' in params else 'various'
         # if checked not specified : True
@@ -324,6 +325,10 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                     self.tr('item not found'),
                     self.tr('item %s not found'%layerName)
                 )
+
+        if zoom:
+            self.iface.setActiveLayer(layer)
+            self.iface.zoomToActiveLayer()
 
         if targetProject is not None:
             # we store the layers by tag to be able to remove them later
@@ -997,14 +1002,19 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             task.setProgress(progress)
 
         # display layers
-        for fPath in ['hru.shp', 'reach.shp']:
-            strPath = os.path.join(self.cfgResultsOutPath, fPath)
-            task.displayLayer.emit({
-                'type': 'vector',
-                'path': strPath,
-                'name': os.path.basename(strPath),
-                'tag': 'results'
-            })
+        task.displayLayer.emit({
+            'type': 'vector',
+            'path': os.path.join(self.cfgResultsOutPath, 'hru.shp'),
+            'name': 'hru.shp',
+            'tag': 'results',
+            'zoom': True
+        })
+        task.displayLayer.emit({
+            'type': 'vector',
+            'path': os.path.join(self.cfgResultsOutPath, 'reach.shp'),
+            'name': 'reach.shp',
+            'tag': 'results'
+        })
 
         return True
 
