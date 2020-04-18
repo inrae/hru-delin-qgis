@@ -47,6 +47,7 @@ from hrudelin.pluginUtils.tools import isWindows, isMac, which, prepareGrassEnv
 prepareGrassEnv()
 from hrudelin.hrudelinCore.modules.hrudelin_1_init import main as main1
 from hrudelin.hrudelinCore.modules.hrudelin_2_basins import main as main2
+from hrudelin.hrudelinCore.modules.hrudelin_3_hrugen import main as main3
 
 # this exception is used by the QgisTasks
 class CancelException(Exception):
@@ -952,8 +953,34 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def processStep3(self, task):
         task.setProgress(0)
 
-        #HruDelinCore.step1(self.configFilePath)
-        print('inside STEP 3 task')
+        for fPath in Path(self.cfgFilesOutPath).rglob('step3*.tif'):
+            os.remove(str(fPath))
+
+        if os.path.exists(self.cfgResultsOutPath):
+            shutil.rmtree(self.cfgResultsOutPath)
+        os.mkdir(self.cfgResultsOutPath)
+
+        # run the mzfc
+        for progress in main3(self.projectFilePath, cpu_count(), True):
+            task.setProgress(progress)
+
+        # display layers
+        for fPath in Path(self.cfgFilesOutPath).rglob('*step3*.tif'):
+            strPath = str(fPath)
+            task.displayLayer.emit({
+                'type': 'raster',
+                'path': strPath,
+                'name': os.path.basename(strPath),
+                'tag': 'step3'
+            })
+        for fPath in Path(self.cfgFilesOutPath).rglob('*step3*.shp'):
+            strPath = str(fPath)
+            task.displayLayer.emit({
+                'type': 'vector',
+                'path': strPath,
+                'name': os.path.basename(strPath),
+                'tag': 'step3'
+            })
 
         return True
 
