@@ -48,6 +48,7 @@ prepareGrassEnv()
 from hrudelin.hrudelinCore.modules.hrudelin_1_init import main as main1
 from hrudelin.hrudelinCore.modules.hrudelin_2_basins import main as main2
 from hrudelin.hrudelinCore.modules.hrudelin_3_hrugen import main as main3
+from hrudelin.hrudelinCore.modules.hrudelin_parms_J2000 import main as main4
 
 # this exception is used by the QgisTasks
 class CancelException(Exception):
@@ -899,7 +900,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'raster',
-                'path': strPath,
+                'path': strPath.replace('step1_', ''),
                 'name': os.path.basename(strPath),
                 'tag': 'step1'
             })
@@ -907,7 +908,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'vector',
-                'path': strPath,
+                'path': strPath.replace('step1_', ''),
                 'name': os.path.basename(strPath),
                 'tag': 'step1'
             })
@@ -935,7 +936,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'raster',
-                'path': strPath,
+                'path': strPath.replace('step2_', ''),
                 'name': os.path.basename(strPath),
                 'tag': 'step2'
             })
@@ -943,7 +944,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'vector',
-                'path': strPath,
+                'path': strPath.replace('step2_', ''),
                 'name': os.path.basename(strPath),
                 'tag': 'step2'
             })
@@ -969,7 +970,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'raster',
-                'path': strPath,
+                'path': strPath.replace('step3_', ''),
                 'name': os.path.basename(strPath),
                 'tag': 'step3'
             })
@@ -977,7 +978,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'vector',
-                'path': strPath,
+                'path': strPath.replace('step3_', ''),
                 'name': os.path.basename(strPath),
                 'tag': 'step3'
             })
@@ -987,8 +988,23 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def processStep4(self, task):
         task.setProgress(0)
 
-        #HruDelinCore.step1(self.configFilePath)
-        print('inside STEP 4 task')
+        if os.path.exists(self.cfgResultsOutPath):
+            shutil.rmtree(self.cfgResultsOutPath)
+        os.mkdir(self.cfgResultsOutPath)
+
+        # run the mzfc
+        for progress in main4(self.projectFilePath, cpu_count(), True):
+            task.setProgress(progress)
+
+        # display layers
+        for fPath in ['hru.shp', 'reach.shp']:
+            strPath = os.path.join(self.cfgResultsOutPath, fPath)
+            task.displayLayer.emit({
+                'type': 'vector',
+                'path': strPath,
+                'name': os.path.basename(strPath),
+                'tag': 'results'
+            })
 
         return True
 
