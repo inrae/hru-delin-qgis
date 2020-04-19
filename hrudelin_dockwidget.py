@@ -905,16 +905,16 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'raster',
-                'path': strPath.replace('step1_', ''),
-                'name': os.path.basename(strPath),
+                'path': strPath,
+                'name': os.path.basename(strPath).replace('step1_', ''),
                 'tag': 'step1'
             })
         for fPath in Path(self.cfgFilesOutPath).rglob('*step1*.shp'):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'vector',
-                'path': strPath.replace('step1_', ''),
-                'name': os.path.basename(strPath),
+                'path': strPath,
+                'name': os.path.basename(strPath).replace('step1_', ''),
                 'tag': 'step1'
             })
 
@@ -941,16 +941,16 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'raster',
-                'path': strPath.replace('step2_', ''),
-                'name': os.path.basename(strPath),
+                'path': strPath,
+                'name': os.path.basename(strPath).replace('step2_', ''),
                 'tag': 'step2'
             })
         for fPath in Path(self.cfgFilesOutPath).rglob('*step2*.shp'):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'vector',
-                'path': strPath.replace('step2_', ''),
-                'name': os.path.basename(strPath),
+                'path': strPath,
+                'name': os.path.basename(strPath).replace('step2_', ''),
                 'tag': 'step2'
             })
 
@@ -975,16 +975,16 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'raster',
-                'path': strPath.replace('step3_', ''),
-                'name': os.path.basename(strPath),
+                'path': strPath,
+                'name': os.path.basename(strPath).replace('step3_', ''),
                 'tag': 'step3'
             })
         for fPath in Path(self.cfgFilesOutPath).rglob('*step3*.shp'):
             strPath = str(fPath)
             task.displayLayer.emit({
                 'type': 'vector',
-                'path': strPath.replace('step3_', ''),
-                'name': os.path.basename(strPath),
+                'path': strPath,
+                'name': os.path.basename(strPath).replace('step3_', ''),
                 'tag': 'step3'
             })
 
@@ -996,6 +996,9 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         if os.path.exists(self.cfgResultsOutPath):
             shutil.rmtree(self.cfgResultsOutPath)
         os.mkdir(self.cfgResultsOutPath)
+
+        for fPath in Path(os.path.join(self.projectFileDir, 'tmp')).rglob('topolog*'):
+            os.remove(str(fPath))
 
         # run the mzfc
         for progress in main4(self.projectFilePath, cpu_count(), True):
