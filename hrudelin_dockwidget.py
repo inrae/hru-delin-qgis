@@ -49,7 +49,7 @@ if platform.system() == 'Windows':
     path = os.path.abspath(os.path.join(sys.exec_prefix, '../../bin/pythonw3.exe'))
     multiprocessing.set_executable(path)
     sys.argv = [None]
-    print('fix in plugin %s'%os.path.abspath(os.path.join(sys.exec_prefix, '../../bin/pythonw3.exe')))
+    print('fix multiprocess for windows in plugin %s'%os.path.abspath(os.path.join(sys.exec_prefix, '../../bin/pythonw3.exe')))
 
 prepareGrassEnv()
 from hrudelin.hrudelinCore.modules.hrudelin_1_init import main as main1
@@ -506,7 +506,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def step1FinishedAuto(self):
         self.step1Finished()
 
-        self.doStep2(True, self.step2FinishedAuto)
+        #self.doStep2(True, self.step2FinishedAuto)
 
     # called when step2 ended during a full run
     # it will chain with the rest of the run

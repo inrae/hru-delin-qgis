@@ -44,13 +44,11 @@ def prepareGrassEnv():
                 break
             except Exception as e:
                 pass
-        print('found winwin %s !!!'%grassBasePath)
 
     elif isMac():
         pass
     else:
         grassBasePath = subprocess.check_output(['grass', '--config', 'path']).decode('utf-8').rstrip(os.linesep)
-        print('found first %s !!!'%grassBasePath)
         if grassBasePath == None:
             for grassVersion in ['74', '75', '76', '77', '78', '79']:
                 findRes = list(Path('/usr/lib/grass%s' % grassVersion).rglob('*r.thin*'))
@@ -63,6 +61,8 @@ def prepareGrassEnv():
         print('GRASS not found on your system')
         raise Exception('GRASS not found on your system')
         return
+
+    print('found grass root %s' % grassBasePath)
 
     grassPythonPath = os.path.join(grassBasePath, 'etc', 'python')
     if grassPythonPath not in sys.path:
