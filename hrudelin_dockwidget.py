@@ -15,7 +15,7 @@
  ***************************************************************************/
 """
 
-import os, shutil, sys, time
+import os, shutil, sys, time, platform
 from pathlib import Path
 import tempfile, configparser
 from zipfile import ZipFile
@@ -45,6 +45,11 @@ from hrudelin.pluginUtils.tools import isWindows, isMac, which, prepareGrassEnv
 
 from multiprocessing import cpu_count
 import multiprocessing
+if platform.system() == 'Windows':
+    path = os.path.abspath(os.path.join(sys.exec_prefix, '../../bin/pythonw3.exe'))
+    multiprocessing.set_executable(path)
+    sys.argv = [None]
+    print('fix in plugin %s'%os.path.abspath(os.path.join(sys.exec_prefix, '../../bin/pythonw3.exe')))
 
 prepareGrassEnv()
 from hrudelin.hrudelinCore.modules.hrudelin_1_init import main as main1
