@@ -45,11 +45,6 @@ from hrudelin.pluginUtils.tools import isWindows, isMac, which, prepareGrassEnv
 
 from multiprocessing import cpu_count
 import multiprocessing
-# fix python bin path for dumb windows
-if isWindows:
-    path = os.path.abspath(os.path.join(sys.exec_prefix, '../../bin/pythonw3.exe'))
-    multiprocessing.set_executable(path)
-    sys.argv = [None]
 
 prepareGrassEnv()
 from hrudelin.hrudelinCore.modules.hrudelin_1_init import main as main1

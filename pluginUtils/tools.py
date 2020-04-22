@@ -61,6 +61,7 @@ def prepareGrassEnv():
 
     if grassBasePath == None:
         print('GRASS not found on your system')
+        raise Exception('GRASS not found on your system')
         return
 
     grassPythonPath = os.path.join(grassBasePath, 'etc', 'python')
@@ -71,23 +72,23 @@ def prepareGrassEnv():
     existingPYTHONPATH = ''
     if 'PYTHONPATH' in os.environ:
         existingPYTHONPATH = os.environ['PYTHONPATH']
-    if grassPythonPath not in existingPYTHONPATH.split(':'):
-        os.environ['PYTHONPATH'] = '%s:%s' % (existingPYTHONPATH, grassPythonPath)
+    if grassPythonPath not in existingPYTHONPATH.split(os.pathsep):
+        os.environ['PYTHONPATH'] = '%s%s%s' % (existingPYTHONPATH, os.pathsep, grassPythonPath)
 
     libPathToAdd = os.path.join(grassBasePath, 'lib')
     existingLdLibraryPath = ''
     if 'LD_LIBRARY_PATH' in os.environ:
         existingLdLibraryPath = os.environ['LD_LIBRARY_PATH']
-    if libPathToAdd not in existingLdLibraryPath.split(':'):
-        os.environ['LD_LIBRARY_PATH'] = '%s:%s' % (existingLdLibraryPath, libPathToAdd)
+    if libPathToAdd not in existingLdLibraryPath.split(os.pathsep):
+        os.environ['LD_LIBRARY_PATH'] = '%s%s%s' % (existingLdLibraryPath, os.pathsep, libPathToAdd)
 
     grassBinPath = os.path.join(grassBasePath, 'bin')
     grassScriptPath = os.path.join(grassBasePath, 'scripts')
     existingPath = ''
     if 'PATH' in os.environ:
         existingPath = os.environ['PATH']
-    if grassBinPath not in existingPath.split(':'):
-        os.environ['PATH'] = '%s:%s' % (existingPath, grassBinPath)
+    if grassBinPath not in existingPath.split(os.pathsep):
+        os.environ['PATH'] = '%s%s%s' % (existingPath, os.pathsep, grassBinPath)
         existingPath = os.environ['PATH']
-    if grassScriptPath not in existingPath.split(':'):
-        os.environ['PATH'] = '%s:%s' % (existingPath, grassScriptPath)
+    if grassScriptPath not in existingPath.split(os.pathsep):
+        os.environ['PATH'] = '%s%s%s' % (existingPath, os.pathsep, grassScriptPath)
