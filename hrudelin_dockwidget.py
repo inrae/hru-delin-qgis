@@ -506,7 +506,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def step2FinishedAuto(self):
         self.step2Finished()
         # launch all maps generation
-        self.doStep3(False, self.step3FinishedAuto)
+        #self.doStep3(False, self.step3FinishedAuto)
 
     def step3FinishedAuto(self):
         self.step3Finished()
@@ -907,7 +907,8 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
                 'type': 'raster',
                 'path': strPath,
                 'name': os.path.basename(strPath).replace('step1_', ''),
-                'tag': 'step1'
+                'tag': 'step1',
+                'zoom': (os.path.basename(strPath) == 'step1_dem_cut.tif')
             })
         for fPath in Path(self.cfgFilesOutPath).rglob('*step1*.shp'):
             strPath = str(fPath)
