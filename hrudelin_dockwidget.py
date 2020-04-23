@@ -691,6 +691,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     # successMethod will be called after the QgsTask has successfully finished
     def launchTask(self, taskName, processMethodList, successMethod=None, errorMethod=None):
         task = HruDelinTask(taskName, self, processMethodList)
+        task.nbProcess = self.nbProcessSpin.value()
         self.task = task
 
         # configure the QgsMessageBar
@@ -951,7 +952,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         os.mkdir(self.cfgResultsOutPath)
 
         # run the mzfc
-        for progress in main2(self.projectFilePath, cpu_count(), True):
+        for progress in main2(self.projectFilePath, task.nbProcess, True):
             task.setProgress(progress)
 
         # display layers
@@ -985,7 +986,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         os.mkdir(self.cfgResultsOutPath)
 
         # run the mzfc
-        for progress in main3(self.projectFilePath, cpu_count(), True):
+        for progress in main3(self.projectFilePath, task.nbProcess, True):
             task.setProgress(progress)
 
         # display layers
@@ -1019,7 +1020,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             os.remove(str(fPath))
 
         # run the mzfc
-        for progress in main4(self.projectFilePath, cpu_count(), True):
+        for progress in main4(self.projectFilePath, task.nbProcess, True):
             task.setProgress(progress)
 
         # display layers
