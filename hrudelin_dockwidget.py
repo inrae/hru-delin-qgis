@@ -105,7 +105,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.changeProjectPathButton.setVisible(True)
         self.changeProjectPathButton.pressed.connect(self.changeProjectPath)
         self.mQgsFileDEM.fileChanged.connect(self.checkDEM)
-        self.mQgsFileStudyArea.fileChanged.connect(self.checkStudyArea)
+        #self.mQgsFileStudyArea.fileChanged.connect(self.checkStudyArea)
         #self.mQgsFileSubcatchment.fileChanged.connect(self.checkUserSubcatchment)
         self.resetButton.clicked.connect(self.resetProject)
         self.loadButton.clicked.connect(self.loadProject)
@@ -113,16 +113,16 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.exportButton.clicked.connect(self.exportProjectConfig)
         self.exportDataButton.clicked.connect(self.exportProjectData)
         # help buttons
-        style = self.subcatchmentHelpButton.style()
+        style = self.projectPathHelpButton.style()
         self.projectPathHelpButton.setIcon(style.standardIcon(QStyle.SP_MessageBoxQuestion))
         self.exportHelpButton.setIcon(style.standardIcon(QStyle.SP_MessageBoxQuestion))
         self.exportDataHelpButton.setIcon(style.standardIcon(QStyle.SP_MessageBoxQuestion))
-        self.subcatchmentHelpButton.setIcon(style.standardIcon(QStyle.SP_MessageBoxQuestion))
-        self.subcatchmentHelpButton.setToolTip(self.tr('Manually provide area where computations are done'))
-        self.studyHelpButton.setIcon(style.standardIcon(QStyle.SP_MessageBoxQuestion))
-        self.studyHelpButton.setToolTip(self.tr('Outlet area to determine subcatchment where computations are done'))
-        self.subcatchmentHelpButton.clicked.connect(self.help)
-        self.studyHelpButton.clicked.connect(self.help)
+        #self.subcatchmentHelpButton.setIcon(style.standardIcon(QStyle.SP_MessageBoxQuestion))
+        #self.subcatchmentHelpButton.setToolTip(self.tr('Manually provide area where computations are done'))
+        #self.studyHelpButton.setIcon(style.standardIcon(QStyle.SP_MessageBoxQuestion))
+        #self.studyHelpButton.setToolTip(self.tr('Outlet area to determine subcatchment where computations are done'))
+        #self.subcatchmentHelpButton.clicked.connect(self.help)
+        #self.studyHelpButton.clicked.connect(self.help)
         self.exportHelpButton.clicked.connect(self.help)
         self.projectPathHelpButton.clicked.connect(self.help)
         self.exportDataHelpButton.clicked.connect(self.help)
@@ -130,7 +130,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # style
         self.inputScrollArea.setBackgroundRole(QPalette.Light)
         self.mQgsFileDEM.setBackgroundRole(QPalette.Light)
-        self.mQgsFileStudyArea.setBackgroundRole(QPalette.Light)
+        #self.mQgsFileStudyArea.setBackgroundRole(QPalette.Light)
 
         # translations
         self.tabWidget.setTabText(0, self.tr('Input files'))
@@ -139,8 +139,8 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.projectBox.setTitle(self.tr('Project'))
         self.groupBoxMnt.setTitle(self.tr('Digital elevation model'))
         self.demFileLabel.setText(self.tr('DEM'))
-        self.studyAreaLabel.setText(self.tr('Study area'))
-        self.subcatchmentLabel.setText(self.tr('Subcatchment'))
+        #self.studyAreaLabel.setText(self.tr('Study area'))
+        #self.subcatchmentLabel.setText(self.tr('Subcatchment'))
         self.changeProjectPathButton.setText(self.tr('Change'))
         self.resetButton.setText(self.tr('Reset project'))
         self.loadButton.setText(self.tr('Load Irip config file (.cfg)'))
@@ -149,13 +149,14 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.exportButton.setText('Export cfg file')
         self.exportDataButton.setText('Export portable config with input data')
 
-        # just to make those strings appear in translation files
-        vvw = self.tr('None')
-        vw = self.tr('Very weak')
-        w = self.tr('Weak')
-        a = self.tr('Average')
-        s = self.tr('Strong')
-        vs = self.tr('Very strong')
+        # default values
+        self.step1Check.setChecked(True)
+        self.step2Check.setChecked(True)
+        self.step3Check.setChecked(True)
+        self.step4Check.setChecked(True)
+        self.nbProcessSpin.setValue(cpu_count())
+        self.nbProcessSpin.setMinimum(1)
+        self.nbProcessSpin.setMaximum(cpu_count())
 
         self.layers = defaultdict(list)
 
@@ -399,7 +400,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # now get the job done
         self.mQgsFileDEM.setFilePath(cfgDemPath)
 
-        self.doStep1(True, self.step1FinishedAuto)
+        self.autoLaunch()
 
     # export a config file from current form state
     def exportProjectConfig(self):
@@ -501,27 +502,38 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         self.iface.messageBar().pushSuccess('HRU delin', self.tr('Data+config archive successfully exported to %s'%exportArchivePath))
 
-    # called when step1 process ended during a full run
-    # the goal is to chain with the rest of the run
+    def autoLaunch(self, previous=0):
+
+        if previous == 0 and self.step1Check.isChecked():
+            self.doStep1(True, self.step1FinishedAuto)
+        elif previous < 2 and self.step2Check.isChecked():
+            self.doStep2(True, self.step2FinishedAuto)
+        elif previous < 3 and self.step3Check.isChecked():
+            self.doStep3(False, self.step3FinishedAuto)
+        elif previous < 4 and self.step4Check.isChecked():
+            self.doStep4(False, self.step4FinishedAuto)
+        else:
+            # we must have finished now
+            wholeProcessEndTime = time.time()
+            print()
+            print('[FULL PROCESS] %.2f'%(wholeProcessEndTime - self.loadProjectStartTime))
+            print()
+
     def step1FinishedAuto(self):
         self.step1Finished()
-        self.doStep2(True, self.step2FinishedAuto)
+        self.autoLaunch(1)
 
-    # called when step2 ended during a full run
-    # it will chain with the rest of the run
     def step2FinishedAuto(self):
         self.step2Finished()
-        self.doStep3(False, self.step3FinishedAuto)
+        self.autoLaunch(2)
 
     def step3FinishedAuto(self):
         self.step3Finished()
-        self.doStep4(False, self.step4FinishedAuto)
+        self.autoLaunch(3)
 
     def step4FinishedAuto(self):
         self.step4Finished()
-        wholeProcessEndTime = time.time()
-        print()
-        print('[FULL PROCESS] %.2f'%(wholeProcessEndTime - self.loadProjectStartTime))
+        self.autoLaunch(4)
 
     # reset all layers and data related to the plugin
     def resetProject(self):
@@ -595,12 +607,12 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # reset study and subcatchment
         # TODO hide doStep* buttons
         #self.doStep1Btn.setVisible(False)
-        self.mQgsFileStudyArea.blockSignals(True)
-        self.mQgsFileSubcatchment.blockSignals(True)
-        self.mQgsFileStudyArea.setFilePath('')
-        self.mQgsFileSubcatchment.setFilePath('')
-        self.mQgsFileStudyArea.blockSignals(False)
-        self.mQgsFileSubcatchment.blockSignals(False)
+        #self.mQgsFileStudyArea.blockSignals(True)
+        #self.mQgsFileSubcatchment.blockSignals(True)
+        #self.mQgsFileStudyArea.setFilePath('')
+        #self.mQgsFileSubcatchment.setFilePath('')
+        #self.mQgsFileStudyArea.blockSignals(False)
+        #self.mQgsFileSubcatchment.blockSignals(False)
 
         for tag in ['step1', 'step2', 'step3', 'step4', 'results']:
             self.removeLayersByTag(tag)
