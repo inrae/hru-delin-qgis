@@ -35,7 +35,6 @@ def split_list(alist, wanted_parts=1):
 
 def prepareGrassEnv():
     grassBasePath = None
-    # sys.path (to be able to import grass.script)
     # find grass depending on the system
     if isWindows():
         for grassVersion in ['74', '75', '76', '77', '78', '79']:
@@ -62,19 +61,22 @@ def prepareGrassEnv():
         raise Exception('GRASS not found on your system')
         return
 
-    print('found grass root %s' % grassBasePath)
+    print('found grass root => %s' % grassBasePath)
 
+    # sys.path (to be able to import grass.script)
     grassPythonPath = os.path.join(grassBasePath, 'etc', 'python')
     if grassPythonPath not in sys.path:
         sys.path.append(grassPythonPath)
     os.environ['GISBASE'] = grassBasePath
 
+    # PYTHON_PATH, just in case
     existingPYTHONPATH = ''
     if 'PYTHONPATH' in os.environ:
         existingPYTHONPATH = os.environ['PYTHONPATH']
     if grassPythonPath not in existingPYTHONPATH.split(os.pathsep):
         os.environ['PYTHONPATH'] = '%s%s%s' % (existingPYTHONPATH, os.pathsep, grassPythonPath)
 
+    # mandatory LD_LIBRARY_PATH to allow grass binaries to load dynamic libraries
     libPathToAdd = os.path.join(grassBasePath, 'lib')
     existingLdLibraryPath = ''
     if 'LD_LIBRARY_PATH' in os.environ:
@@ -82,6 +84,7 @@ def prepareGrassEnv():
     if libPathToAdd not in existingLdLibraryPath.split(os.pathsep):
         os.environ['LD_LIBRARY_PATH'] = '%s%s%s' % (existingLdLibraryPath, os.pathsep, libPathToAdd)
 
+    # PATH is obviously needed
     grassBinPath = os.path.join(grassBasePath, 'bin')
     grassScriptPath = os.path.join(grassBasePath, 'scripts')
     existingPath = ''

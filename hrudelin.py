@@ -49,7 +49,7 @@ class HruDelin:
         #locale = QSettings().value('locale/userLocale')[0:2]
         # we now take the whole locale name to determine which file to load
         locale = QSettings().value('locale/userLocale')
-        print('LOCALE %s'%locale)
+        #print('LOCALE %s'%locale)
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',

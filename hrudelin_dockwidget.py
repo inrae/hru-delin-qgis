@@ -505,15 +505,13 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     # the goal is to chain with the rest of the run
     def step1FinishedAuto(self):
         self.step1Finished()
-
-        #self.doStep2(True, self.step2FinishedAuto)
+        self.doStep2(True, self.step2FinishedAuto)
 
     # called when step2 ended during a full run
     # it will chain with the rest of the run
     def step2FinishedAuto(self):
         self.step2Finished()
-        # launch all maps generation
-        #self.doStep3(False, self.step3FinishedAuto)
+        self.doStep3(False, self.step3FinishedAuto)
 
     def step3FinishedAuto(self):
         self.step3Finished()
