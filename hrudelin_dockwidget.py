@@ -112,6 +112,11 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         self.debugCheck.stateChanged.connect(self.debugChanged)
         self.exportButton.clicked.connect(self.exportProjectConfig)
         self.exportDataButton.clicked.connect(self.exportProjectData)
+        self.step1Check.clicked.connect(self.stepClicked)
+        self.step2Check.clicked.connect(self.stepClicked)
+        self.step3Check.clicked.connect(self.stepClicked)
+        self.step4Check.clicked.connect(self.stepClicked)
+        self.stepClicked()
         # help buttons
         style = self.projectPathHelpButton.style()
         self.projectPathHelpButton.setIcon(style.standardIcon(QStyle.SP_MessageBoxQuestion))
@@ -143,8 +148,9 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         #self.subcatchmentLabel.setText(self.tr('Subcatchment'))
         self.changeProjectPathButton.setText(self.tr('Change'))
         self.resetButton.setText(self.tr('Reset project'))
-        self.loadButton.setText(self.tr('Load Irip config file (.cfg)'))
+        self.loadButton.setText(self.tr('Load HRU-delin config file (.cfg)'))
         self.debugCheck.setText(self.tr('See all intermediate files\n(debug mode)'))
+        self.debugCheck.setVisible(False)
         self.exportDataResultsCheck.setText('Include results in exported archive')
         self.exportButton.setText('Export cfg file')
         self.exportDataButton.setText('Export portable config with input data')
@@ -208,6 +214,23 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
     def debugChanged(self):
         self.DEBUG = self.debugCheck.isChecked()
+
+    def stepClicked(self):
+        print('plop')
+        checkBoxes = [self.step1Check, self.step2Check, self.step3Check, self.step4Check]
+        checkedIndexes = []
+        for i, cb in enumerate(checkBoxes):
+            if cb.isChecked():
+                checkedIndexes.append(i)
+            checkBoxes[i].setDisabled(False)
+        if len(checkedIndexes) >= 2:
+            print('range %s %s' % (checkedIndexes[0] + 1, checkedIndexes[-1]))
+            print(list(range(checkedIndexes[0] + 1, checkedIndexes[-1])))
+            for i in range(checkedIndexes[0] + 1, checkedIndexes[-1]):
+                checkBoxes[i].setChecked(True)
+                checkBoxes[i].setDisabled(True)
+        elif len(checkedIndexes) == 1:
+            checkBoxes[checkedIndexes[0]].setDisabled(True)
 
     ########## manage layers ###########
 
