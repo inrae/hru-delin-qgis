@@ -45,6 +45,12 @@ def prepareGrassEnv():
                 pass
 
     elif isMac():
+        qgisContents = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(sys.exec_prefix))))
+        for grassVersion in ['74', '75', '76', '77', '78', '79']:
+            candidatePath = os.path.join(qgisContents, 'Resources', 'grass7')
+            if os.path.isfile(os.path.join(candidatePath, 'bin', 'grass%s' % grassVersion)):
+                grassBasePath = candidatePath
+                break
         pass
     else:
         grassBasePath = subprocess.check_output(['grass', '--config', 'path']).decode('utf-8').rstrip(os.linesep)

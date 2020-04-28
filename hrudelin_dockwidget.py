@@ -45,11 +45,17 @@ from hrudelin.pluginUtils.tools import isWindows, isMac, which, prepareGrassEnv
 
 from multiprocessing import cpu_count
 import multiprocessing
-if platform.system() == 'Windows':
+#if platform.system() == 'Windows':
+if isWindows():
     path = os.path.abspath(os.path.join(sys.exec_prefix, '../../bin/pythonw3.exe'))
     multiprocessing.set_executable(path)
     sys.argv = [None]
     print('fix multiprocess for windows in plugin %s'%os.path.abspath(os.path.join(sys.exec_prefix, '../../bin/pythonw3.exe')))
+elif isMac():
+    path = os.path.abspath(os.path.join(sys.exec_prefix, 'bin/python3'))
+    multiprocessing.set_executable(path)
+    sys.argv = [None]
+    print('fix multiprocess for Mac in plugin %s'%os.path.abspath(os.path.join(sys.exec_prefix, 'bin/python3')))
 
 prepareGrassEnv()
 from hrudelin.hrudelinCore.modules.hrudelin_1_init import main as main1
