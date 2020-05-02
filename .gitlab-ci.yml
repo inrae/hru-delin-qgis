@@ -1,0 +1,24 @@
+image: ubuntu:19.10
+
+stages:
+  - build
+
+before_script:
+  - apt update -yqq > /dev/null 2>&1
+  - apt install git sudo zip unzip -yqq > /dev/null 2>&1
+
+build_hrudelin_plugin_release:
+  stage: build
+  only:
+    # only in build branch
+    refs:
+      - build
+  artifacts:
+    paths:
+      - release
+  script:
+    - mkdir release
+    - ./version.sh
+    - export VERSION=`cat version.txt`
+    - mv hrudelin-$VERSION.zip ./release/
+
