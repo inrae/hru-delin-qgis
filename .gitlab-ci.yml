@@ -1,5 +1,8 @@
 image: ubuntu:19.10
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 stages:
   - build
 
@@ -15,10 +18,6 @@ build_hrudelin_plugin_release:
       - build
   artifacts:
     paths:
-      - release
+      - hrudelin-*.zip
   script:
-    - mkdir release
     - ./version.sh
-    - export VERSION=`cat version.txt`
-    - mv hrudelin-$VERSION.zip ./release/
-
