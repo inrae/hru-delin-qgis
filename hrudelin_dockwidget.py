@@ -63,6 +63,12 @@ from hrudelin.hrudelinCore.modules.hrudelin_2_basins import main as main2
 from hrudelin.hrudelinCore.modules.hrudelin_3_hrugen import main as main3
 from hrudelin.hrudelinCore.modules.hrudelin_parms_J2000 import main as main4
 
+try:
+    import dbf
+    DBF=True
+except Exception as e:
+    DBF=False
+
 # this exception is used by the QgisTasks
 class CancelException(Exception):
     pass
