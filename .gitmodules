@@ -1,4 +1,3 @@
 [submodule "hru-delin"]
 	path = hrudelinCore
-    #url = https://gitlab.irstea.fr/julien.veyssier/hru-delin.git
-	url = ../../julien.veyssier/hru-delin.git
+	url = ../../hru-delin-dev/hru-delin.git
