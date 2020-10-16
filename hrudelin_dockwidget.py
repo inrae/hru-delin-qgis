@@ -200,13 +200,13 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             message = self.tr('Set this if you already know the area where you want to make the computations.\n\nIf you provide a value here, study area field will be ignored.')
         elif oName == 'studyHelpButton':
             title = self.tr('Help for study area')
-            message = self.tr('If you set this, IRIP will compute the related subcatchment area which is the area flowing to the study area.\n\nIf you provide a value here, subcatchment field will be ignored.')
+            message = self.tr('If you set this, HRU-delin will compute the related subcatchment area which is the area flowing to the study area.\n\nIf you provide a value here, subcatchment field will be ignored.')
         elif oName == 'exportHelpButton':
             title = self.tr('Help for export')
-            message = self.tr('You can export project configuration (file paths) to a config (.cfg) file. You can then load this file to run Irip again with this configuration.\n\nThis is usefull to perform the same analysis multiple times or to change just one input file and re-run an analysis.')
+            message = self.tr('You can export project configuration (file paths) to a config (.cfg) file. You can then load this file to run HRU-delin again with this configuration.\n\nThis is usefull to perform the same analysis multiple times or to change just one input file and re-run an analysis.')
         elif oName == 'exportDataHelpButton':
             title = self.tr('Help for export data')
-            message = self.tr('This button allows you to export an archive containing all input data files and a config (.cfg) file.\n\nYou can then send this archive to someone who will directly be able to run the analysis with Irip plugin.')
+            message = self.tr('This button allows you to export an archive containing all input data files and a config (.cfg) file.\n\nYou can then send this archive to someone who will directly be able to run the analysis with HRU-delin plugin.')
         if oName == 'projectPathHelpButton':
             title = self.tr('Help for project path')
             message = self.tr('This is the path where result directories will be created (results, indicators, tmp and work)')
@@ -487,7 +487,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # export relative path only
         config = configparser.ConfigParser()
         input_dir = 'input_data'
-        output_dir = 'results_irip_plugin'
+        output_dir = 'results_HRU-delin_plugin'
 
         config['dir_in'] = {'dir': input_dir}
         config['dir_out'] = {'results': output_dir}
@@ -623,18 +623,18 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         if not os.path.exists(self.projectPath):
             os.mkdir(self.projectPath)
 
-        self.intermDir = os.path.join(self.projectPath, 'hrudelin_intermediate')
-        if os.path.exists(self.intermDir):
-            shutil.rmtree(self.intermDir)
-        os.mkdir(self.intermDir)
+    #    self.intermDir = os.path.join(self.projectPath, 'hrudelin_intermediate')
+     #   if os.path.exists(self.intermDir):
+     #       shutil.rmtree(self.intermDir)
+     #   os.mkdir(self.intermDir)
 
-        self.finalDir = os.path.join(self.projectPath, 'hrudelin_final')
-        if os.path.exists(self.finalDir):
-            shutil.rmtree(self.finalDir)
-        os.mkdir(self.finalDir)
+      #  self.finalDir = os.path.join(self.projectPath, 'hrudelin_final')
+       # if os.path.exists(self.finalDir):
+        #    shutil.rmtree(self.finalDir)
+       # os.mkdir(self.finalDir)
 
     # called after having changed the DEM
-    # reset all further Irip "chapters"
+    # reset all further HRU-delin "chapters"
     # get project projection from the DEM file
     def checkDEM(self):
         self.changeProjectPathButton.setVisible(False)
@@ -664,9 +664,18 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
             # we just get the projection
             fd = gdal.Open(self.demPath)
             osrProj = osr.SpatialReference(wkt=fd.GetProjection())
+            if str(osrProj.GetName()) == 'None':
+               QMessageBox.critical(
+                    self.iface.mainWindow(),
+                    self.tr('Error'),
+                    self.tr('Input Dem as no SCR. Please add one')
+                    )
+
+
+
+
             self.projNum = int(osrProj.GetAttrValue('AUTHORITY', 1))
             self.proj = 'EPSG:%s' % self.projNum
-
             self.projObj = QgsCoordinateReferenceSystem(self.projNum, QgsCoordinateReferenceSystem.EpsgCrsId)
             self.demLayer = self.displayLayer({
                 'type': 'raster',
@@ -774,7 +783,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         ## show next GUI elements
         #self.groupBoxLanduse.setVisible(True)
-        #self.groupBoxIripPlus.setVisible(True)
+        #self.groupBoxHRUdelinPlus.setVisible(True)
         #self.landuseLegend1Frame.setVisible(False)
         #self.landuseLegend2Frame.setVisible(False)
 
@@ -810,7 +819,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         ## show next GUI elements
         #self.groupBoxLanduse.setVisible(True)
-        #self.groupBoxIripPlus.setVisible(True)
+        #self.groupBoxHRUdelinPlus.setVisible(True)
         #self.landuseLegend1Frame.setVisible(False)
         #self.landuseLegend2Frame.setVisible(False)
 
@@ -850,7 +859,7 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
         ## show next GUI elements
         #self.groupBoxLanduse.setVisible(True)
-        #self.groupBoxIripPlus.setVisible(True)
+        #self.groupBoxHRUdelinPlus.setVisible(True)
         #self.landuseLegend1Frame.setVisible(False)
         #self.landuseLegend2Frame.setVisible(False)
 

@@ -11,13 +11,13 @@ name=hru-delin
 qgisMinimumVersion=3.0
 description=HRU delineation
 version=0.1
-author=IRSTEA
-email=a@a
+author=INRAE - UR RIVERLY
+email=michael.rabotin@inrae.fr
 
-about=This plugin is a port of hru-delin v7 "standalone"
+about=This plugin is a port of hru-delin v6.0 "standalone"
 
-tracker=https://gitlab.irstea.fr/julien.veyssier/hru-delin-qgis
-repository=https://gitlab.irstea.fr/julien.veyssier/hru-delin-qgis
+tracker=https://gitlab.irstea.fr/hru-delin-dev/hru-delin-qgis
+repository=https://gitlab.irstea.fr/hru-delin-dev/hru-delin-qgis
 # End of mandatory metadata
 
 # Recommended items:

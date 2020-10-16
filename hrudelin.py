@@ -177,7 +177,7 @@ class HruDelin:
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
-        #print "** CLOSING Irip"
+        #print "** CLOSING HRU-delin"
 
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
@@ -194,7 +194,7 @@ class HruDelin:
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
-        #print "** UNLOAD Irip"
+        #print "** UNLOAD HRU-delin"
 
         for action in self.actions:
             self.iface.removePluginMenu(

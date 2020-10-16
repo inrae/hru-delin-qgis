@@ -3,7 +3,7 @@
 git checkout l10n_master
 git reset --hard HEAD~100
 git pull origin l10n_master
-rm -rf /tmp/irip_translation ; cp -r i18n/crowdin /tmp/irip_translation
+rm -rf /tmp/hru-delin_translation ; cp -r i18n/crowdin /tmp/hru-delin_translation
 git checkout master
 mv `find /tmp/hru-delin_translation -name "*.ts"` i18n/
 rm -rf /tmp/hru-delin_translation
