@@ -676,7 +676,8 @@ class HruDelinDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
 
             self.projNum = int(osrProj.GetAttrValue('AUTHORITY', 1))
             self.proj = 'EPSG:%s' % self.projNum
-            self.projObj = QgsCoordinateReferenceSystem(self.projNum, QgsCoordinateReferenceSystem.EpsgCrsId)
+#           self.projObj = QgsCoordinateReferenceSystem(self.projNum, QgsCoordinateReferenceSystem.EpsgCrsId)
+            self.projObj = QgsCoordinateReferenceSystem.fromEpsgId(self.projNum) 
             self.demLayer = self.displayLayer({
                 'type': 'raster',
                 'path': self.demPath,
