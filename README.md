@@ -17,9 +17,8 @@ How to install ?
 This plugins includes HRU delin v6.0 and imports it instead of executing it.
 This repository has a submodule, this means hru-delin.git repository is nested into hru-delin-qgis.git.
 Make sure you clone it like that:
-git clone --recurse-submodules --remote-submodules git@gitlab-ssh.irstea.fr:hru-delin-dev/hru-delin-qgis.git
-# or
-git clone --recurse-submodules --remote-submodules https://gitlab.irstea.fr/hru-delin-dev/hru-delin-qgis.git
+
+git clone --recurse-submodules --remote-submodules https://forgemia.inra.fr/singularity-mesolr/hru-delin.git
 
 
 Produce a release
